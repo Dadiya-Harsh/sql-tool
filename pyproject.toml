@@ -7,14 +7,14 @@ name = "sql-agent-tool"
 version = "0.1.0"
 description = "A secure SQL tool for AI agents to interact with databases"
 readme = "README.md"
-requires-python = ">=3.10"  # Matches your test environment
+requires-python = ">=3.10"
 dependencies = [
-    "sqlalchemy>=2.0",      # Database ORM
-    "psycopg2-binary>=2.9", # PostgreSQL driver (added from latest)
-    "groq>=0.1",            # Groq API for AI (from earlier)
-    "pydantic>=2.0",        # Data validation
-    "sqlparse>=0.4",        # SQL parsing (from earlier)
-    "python-dotenv>=0.20"   # Environment variable loading (from earlier)
+    "sqlalchemy>=2.0",
+    "psycopg2-binary>=2.9",
+    "groq>=0.1",
+    "pydantic>=2.0",
+    "sqlparse>=0.4",
+    "python-dotenv>=0.20"
 ]
 authors = [
     { name = "Harsh Dadiya", email = "harshdadiya@gmail.com" },
@@ -22,7 +22,6 @@ authors = [
 license = "MIT"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 
@@ -32,8 +31,8 @@ classifiers = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=7.0",          # Testing framework (updated from earlier)
-    "pytest-mock>=3.0",     # Mocking for tests (added from latest needs)
-    "black>=23.0",          # Code formatting (from earlier)
-    "flake8>=6.0"           # Linting (from earlier)
+    "pytest>=7.0",
+    "pytest-mock>=3.0",
+    "black>=23.0",
+    "flake8>=6.0"
 ]
