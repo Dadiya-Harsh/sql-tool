@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="sql-agent-tool",          # Package name (must be unique if publishing to PyPI)
-    version="0.1.1",                # Version number
+    version="0.1.2",                # Version number
     description="A Python tool for interacting with PostgreSQL databases",
     long_description=open("README.md").read(),  # Use README as description
     long_description_content_type="text/markdown",
