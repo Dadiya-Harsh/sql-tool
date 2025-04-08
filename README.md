@@ -4,7 +4,7 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Tests](https://img.shields.io/badge/tests-pytest-brightgreen.svg)
 
-The **SQL Agent Tool** is a Python-based utility designed to interact with PostgreSQL databases, allowing users to execute SQL queries safely and efficiently. It integrates with the Groq API for potential natural language query generation (if implemented) and includes a robust test suite to ensure reliability. This project was developed as part of an internship at Wappnet, focusing on database interaction and testing against an existing PostgreSQL database (`P2`).
+The **SQL Agent Tool** is a Python-based utility designed to interact with PostgreSQL databases, allowing users to execute SQL queries safely and efficiently. It integrates with the Groq API for potential natural language query generation (if implemented) and includes a robust test suite to ensure reliability.
 
 ## Features
 
