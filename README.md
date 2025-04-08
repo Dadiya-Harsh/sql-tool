@@ -103,6 +103,8 @@ sql_tool.close()
 
 ```
 
+### Output
+
 ```
 Extracted parameters: {'search_pattern': 'harsh'}
 SQL with parameters:
