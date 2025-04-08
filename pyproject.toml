@@ -27,8 +27,8 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/yourusername/sql-tool"
-"Repository" = "https://github.com/yourusername/sql-tool"
+"Homepage" = "https://github.com/Dadiya-Harsh/sql-tool"
+"Repository" = "https://github.com/Dadiya-Harsh/sql-tool"
 
 [project.optional-dependencies]
 dev = [
