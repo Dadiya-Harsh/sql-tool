@@ -11,6 +11,9 @@ class DatabaseConfig(BaseModel):
     database: str
     query: Dict[str, str] = {}
     require_ssl: bool = False
+    llm_provider: str # e.g., 'openai', 'gemini', 'microsoft', deepseek , etc.
+    llm_api_key: str
+    llm_model: str  # e.g., "llama-3.3-70b-versatile" for Groq
 
     @field_validator('drivername')
     def validate_drivername(cls, v):

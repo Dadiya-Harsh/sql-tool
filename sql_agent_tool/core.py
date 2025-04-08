@@ -7,8 +7,14 @@ import sqlparse
 from sqlalchemy import create_engine, inspect, MetaData, text
 from sqlalchemy.exc import SQLAlchemyError
 from groq import Groq
+
+from .llm.base import LLMInterface
 from .models import DatabaseConfig, QueryResult
 from .exceptions import LLMGenerationError, QueryExecutionError, SQLValidationError, ParameterExtractionError, SchemaReflectionError
+
+from .llm.groq import GroqLLM
+from .llm.gemini import GeminiLLM
+from .llm.deepseek import DeepSeekLLM
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +25,7 @@ class SQLAgentTool:
                  max_rows: int = 1000, read_only: bool = True,
                  llm_model: str = "llama-3.3-70b-versatile"):
         self.config = config
+        self.llm = self._initialize_llm(config.llm_provider, config.llm_api_key, llm_model)
         self.max_rows = max_rows
         self.read_only = read_only
         self.engine = self._create_engine()
@@ -28,6 +35,20 @@ class SQLAgentTool:
         self.llm_model = llm_model
         self.llm_temperature = 0.3
         self.llm_max_tokens = 1024
+
+    def _initialize_llm(self, provider: str, api_key: str, model: str) -> LLMInterface:
+        provider = self.config.llm_provider
+        api_key = self.config.llm_api_key
+        model = self.config.llm_model
+
+        if provider == "groq":
+            return GroqLLM(api_key=api_key, model=model)
+        elif provider == "gemini":
+            return GeminiLLM(api_key=api_key, model=model)
+        elif provider == "deepseek":
+            return DeepSeekLLM(api_key=api_key, model=model)
+        else:
+            raise ValueError(f"Unsupported LLM provider: {provider}")
 
     # Move all methods here (keeping them as they are for brevity)
     # Example: _create_engine
@@ -285,23 +306,25 @@ class SQLAgentTool:
         Natural Language Request: "{request}"
 
         Respond ONLY with the SQL query enclosed in ```sql markers.
+
         """
         return prompt
         
     def _call_llm_for_sql(self, prompt: str, **kwargs) -> str:
         """Call Groq's LLM to generate SQL from natural language."""
         try:
-            response = self.groq_client.chat.completions.create(
-                messages=[
-                    {"role": "system", "content": "You are an expert SQL developer."},
-                    {"role": "user", "content": prompt}
-                ],
-                model=self.llm_model,
-                temperature=kwargs.get('temperature', self.llm_temperature),
-                max_tokens=kwargs.get('max_tokens', self.llm_max_tokens),
-                stop=None,
-                stream=False
-            )
+            # response = self.groq_client.chat.completions.create(
+            #     messages=[
+            #         {"role": "system", "content": "You are an expert SQL developer."},
+            #         {"role": "user", "content": prompt}
+            #     ],
+            #     model=self.llm_model,
+            #     temperature=kwargs.get('temperature', self.llm_temperature),
+            #     max_tokens=kwargs.get('max_tokens', self.llm_max_tokens),
+            #     stop=None,
+            #     stream=False
+            # )
+            response = self.llm.generate_sql(prompt)
             generated_content = response.choices[0].message.content
             sql_query = self._extract_sql_from_response(generated_content)
             if not sql_query:
@@ -438,24 +461,25 @@ class SQLAgentTool:
         """
 
         try:
-            response = self.groq_client.chat.completions.create(
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "You are an expert in SQL parameter extraction. Extract parameter values from natural language queries precisely."
-                    },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ],
-                model=self.llm_model,
-                temperature=0.1,  # Low temperature for consistency
-                max_tokens=self.llm_max_tokens,
-                stop=None,
-                stream=False
-            )
+            # response = self.groq_client.chat.completions.create(
+            #     messages=[
+            #         {
+            #             "role": "system",
+            #             "content": "You are an expert in SQL parameter extraction. Extract parameter values from natural language queries precisely."
+            #         },
+            #         {
+            #             "role": "user",
+            #             "content": prompt
+            #         }
+            #     ],
+            #     model=self.llm_model,
+            #     temperature=0.1,  # Low temperature for consistency
+            #     max_tokens=self.llm_max_tokens,
+            #     stop=None,
+            #     stream=False
+            # )
             
+            response = self.llm.generate_sql(prompt)
             # Extract JSON from response
             content = response.choices[0].message.content
             
