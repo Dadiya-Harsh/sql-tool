@@ -247,10 +247,11 @@ class SQLAgentTool:
         try:
             with self.engine.connect() as conn:
                 result = conn.execute(text(f"SELECT * FROM {table_name} LIMIT {sample_limit}"))
-                return [dict(row) for row in result]
+                return [dict(row._mapping) for row in result]  # Use _mapping for safer dict conversion
         except Exception as e:
             logger.warning(f"Could not get sample data for {table_name}: {str(e)}")
             return []
+        
 
     def _create_sql_generation_prompt(self, request: str, schema_info: Dict[str, Any]) -> str:
         """Enhanced prompt for generating SQL from natural language queries."""
@@ -308,6 +309,17 @@ class SQLAgentTool:
             return sql_query
         except Exception as e:
             raise LLMGenerationError(prompt=prompt, error_detail=str(e))
+        
+
+    def _extract_sql_from_response(self, response: str) -> str:
+        """Extract SQL query from LLM response enclosed in ```sql markers."""
+        sql_match = re.search(r'```sql\s*(.*?)\s*```', response, re.DOTALL)
+        if sql_match:
+            sql = sql_match.group(1).strip()
+            if not sql:
+                raise LLMGenerationError(prompt="Unknown", error_detail="Empty SQL query in response")
+            return sql
+        raise LLMGenerationError(prompt="Unknown", error_detail="No SQL query found in LLM response")
         
 
     def _extract_parameters(self, sql: str, request: Optional[str] = None) -> Tuple[str, Dict[str, Any]]:
