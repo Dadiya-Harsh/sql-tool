@@ -37,6 +37,16 @@ sql-tool/
 
 ## Installation
 
+You can install the SQL Agent Tool either via PyPI or by cloning the repository.
+
+### Option 1: Install via PyPI
+
+```bash
+pip install sql-agent-tool
+```
+
+### Option 2: Clone the Repository
+
 1. **Clone the Repository**:
 
    ```bash
@@ -100,7 +110,6 @@ result = sql_tool.process_natural_language_query("Tell me about user named harsh
 print(result.data)
 
 sql_tool.close()
-
 ```
 
 ### Output
@@ -118,7 +127,6 @@ LIMIT 500;
 
 Query executed successfully, found 1 results:
 {'id': 1, 'first_name': 'Harsh', 'last_name': 'Dadiya', 'email': 'harshd.wappnet@outlook.com', 'password_hash': 'scrypt:32768:8:1$qZjIi1nspVvAXA3s$56ac099109a62e84031be436ea28791fb1aee8ed5d98bbf01b4b6757ea56c94722e2c48cfa8bb5eb573ddc523f8ed677310afb1a5d2e915c4ae0ee1ea5517465', 'role_id': 4, 'department_id': None, 'manager_id': None, 'created_at': datetime.datetime(2025, 3, 29, 7, 45, 25, 745545)}
-
 ```
 
 ### Running Tests
