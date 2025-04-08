@@ -1,8 +1,8 @@
 # SQL Agent Tool
 
 [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://pypi.org/project/sql-agent-tool/)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/your-username/sql-agent-tool/blob/main/LICENSE)
-[![Tests](https://img.shields.io/badge/tests-pytest-brightgreen.svg)](https://github.com/your-username/sql-agent-tool/actions)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/Dadiya-Harsh/sql-tool/blob/main/LICENSE)
+[![Tests](https://img.shields.io/badge/tests-pytest-brightgreen.svg)](https://github.com/Dadiya-Harsh/sql-tool/actions)
 
 The **SQL Agent Tool** is a Python-based utility designed to interact with PostgreSQL databases, allowing users to execute SQL queries safely and efficiently. It integrates with the Groq API for potential natural language query generation (if implemented) and includes a robust test suite to ensure reliability.
 
@@ -93,11 +93,30 @@ config = DatabaseConfig(
     database="P2"
 )
 
-tool = SQLAgentTool(config, groq_api_key="your_groq_api_key_here")
-result = tool.execute_query("SELECT * FROM users WHERE id = :id", {"id": 1})
+sql_tool = SQLAgentTool(config, groq_api_key="your_groq_api_key_here")
+
+# Example: Process natural language query
+result = sql_tool.process_natural_language_query("Tell me about user named harsh")
 print(result.data)
 
-tool.close()
+sql_tool.close()
+
+```
+
+```
+Extracted parameters: {'search_pattern': 'harsh'}
+SQL with parameters:
+-- Find user by first name or last name
+SELECT *
+FROM users
+WHERE first_name ILIKE :search_pattern
+   OR last_name ILIKE :search_pattern
+LIMIT 500;
+-- Parameter: search_pattern = '%harsh%'
+
+Query executed successfully, found 1 results:
+{'id': 1, 'first_name': 'Harsh', 'last_name': 'Dadiya', 'email': 'harshd.wappnet@outlook.com', 'password_hash': 'scrypt:32768:8:1$qZjIi1nspVvAXA3s$56ac099109a62e84031be436ea28791fb1aee8ed5d98bbf01b4b6757ea56c94722e2c48cfa8bb5eb573ddc523f8ed677310afb1a5d2e915c4ae0ee1ea5517465', 'role_id': 4, 'department_id': None, 'manager_id': None, 'created_at': datetime.datetime(2025, 3, 29, 7, 45, 25, 745545)}
+
 ```
 
 ### Running Tests
@@ -166,7 +185,3 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 - Developed during an internship at Wappnet.
 - Built with guidance from Grok (xAI) for testing and debugging.
-
----
-
-Feel free to customize this further—add specific sections like "Configuration Details" if your tool has more features, or include a "Roadmap" if you have future plans. Let me know if you’d like me to refine it or add anything specific!
