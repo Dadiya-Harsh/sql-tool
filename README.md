@@ -4,13 +4,14 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/Dadiya-Harsh/sql-tool/blob/main/LICENSE)
 [![Tests](https://img.shields.io/badge/tests-pytest-brightgreen.svg)](https://github.com/Dadiya-Harsh/sql-tool/actions)
 
-The **SQL Agent Tool** is a Python-based utility designed to interact with PostgreSQL databases, allowing users to execute SQL queries safely and efficiently. It integrates with the Groq API for potential natural language query generation (if implemented) and includes a robust test suite to ensure reliability.
+The **SQL Agent Tool** is a Python-based utility designed to interact with PostgreSQL databases, allowing users to execute SQL queries safely and efficiently. It integrates with multiple LLM providers (Groq, Google Gemini, OpenAI, DeepSeek) to convert natural language queries into SQL, and includes a robust test suite to ensure reliability.
 
 ## Features
 
 - **Database Connection**: Connects to PostgreSQL databases using SQLAlchemy.
 - **Query Execution**: Safely executes read-only SQL queries with parameter binding.
 - **Schema Reflection**: Retrieves and reflects database schema information.
+- **Natural Language Processing**: Converts natural language queries to SQL using LLMs.
 - **Error Handling**: Custom exceptions for schema reflection, query validation, and execution errors.
 - **Testing**: Comprehensive test suite using `pytest` with temporary table management to preserve production data.
 
@@ -22,18 +23,48 @@ sql-tool/
 │   ├── __init__.py
 │   ├── core.py          # Main SQLAgentTool implementation
 │   ├── exceptions.py    # Custom exceptions
-│   └── models.py        # Database configuration models (e.g., DatabaseConfig)
+│   ├── models.py        # Database configuration models (e.g., DatabaseConfig)
+│   └── llm/             # LLM integrations
+│       ├── base.py
+│       ├── groq.py
+│       ├── gemini.py
+│       ├── openai.py
+│       ├── deepseek.py
+│       └── factory.py
 ├── tests/
 │   └── test_postgresql.py  # Test suite for PostgreSQL integration
 ├── pyproject.toml       # Project configuration and dependencies
+├── test1.py             # Example script for usage
 └── README.md            # This file
 ```
 
 ## Prerequisites
 
 - **Python**: 3.10 or higher
-- **PostgreSQL**: A running PostgreSQL server (e.g., on `localhost:5433`) with a database (e.g., `P2`)
-- **Dependencies**: Listed in `pyproject.toml`
+- **PostgreSQL**: A running PostgreSQL server (e.g., local or AWS RDS).
+- **Dependencies**: Install required packages:
+
+  ```bash
+  pip install -r requirements.txt
+  ```
+
+  Example `requirements.txt`:
+
+  ```
+  sqlalchemy>=2.0
+  psycopg2-binary>=2.9
+  pydantic>=2.0
+  python-dotenv>=1.0
+  groq>=0.4
+  google-generativeai>=0.5
+  openai>=1.0
+  ```
+
+- **API Keys**: Obtain API keys for your chosen LLM providers:
+  - Groq: [Get your API key](https://console.groq.com/keys)
+  - Google Gemini: [Get your API key](https://ai.google.dev/)
+  - OpenAI: [Get your API key](https://platform.openai.com/account/api-keys)
+  - DeepSeek: [Get your API key](https://platform.deepseek.com/api_keys)
 
 ## Installation
 
@@ -67,83 +98,150 @@ pip install sql-agent-tool
    pip install .
    ```
 
-   Alternatively, install development dependencies for testing:
+   For development (including tests):
 
    ```bash
    pip install .[dev]
    ```
 
-4. **Configure Environment Variables** (optional):
-   Create a `.env` file or set these in your shell:
-   ```bash
-   PG_USER=postgres
-   PG_PASSWORD=password
-   PG_HOST=localhost
-   PG_PORT=5433
-   PG_DATABASE=P2
-   GROQ_API_KEY=your_groq_api_key_here
+4. **Configure Environment Variables**:
+   Create a `.env` file in the project root:
+   ```plaintext
+   GROQ_API_KEY=<your-groq-api-key>
+   GEMINI_API_KEY=<your-gemini-api-key>
+   OPENAI_API_KEY=<your-openai-api-key>
+   DEEPSEEK_API_KEY=<your-deepseek-api-key>
+   DATABASE_URL=postgresql://<username>:<password>@<host>:<port>/<database>
    ```
-   Load them in your script with `python-dotenv` if needed.
+   Example:
+   ```plaintext
+   GROQ_API_KEY=<your-groq-api-key>
+   DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/yourdatabase
+   ```
 
 ## Usage
 
+The SQL Agent Tool converts natural language queries into SQL and executes them against your PostgreSQL database, supporting multiple LLM providers for flexibility.
+
 ### Running the Tool
 
-The `SQLAgentTool` class can be instantiated and used to interact with your PostgreSQL database. Example:
+Use the provided `test1.py` script to run example queries. The script connects to your database and processes two sample queries using your chosen LLM provider.
 
-```python
-from sql_agent_tool import SQLAgentTool, DatabaseConfig
+1. **Set Up Your Environment**:
+   Ensure your `.env` file contains the necessary API key and database URL.
 
-config = DatabaseConfig(
-    drivername="postgresql",
-    username="postgres",
-    password="password",
-    host="localhost",
-    port=5433,
-    database="P2"
-)
+2. **Run with Default LLM (Groq)**:
 
-sql_tool = SQLAgentTool(config, groq_api_key="your_groq_api_key_here")
+   ```bash
 
-# Example: Process natural language query
-result = sql_tool.process_natural_language_query("Tell me about user named harsh")
-print(result.data)
+      #this are contents of test1.py for testing of tool
+      from sql_agent_tool.model import SQLAgentTool, DatabaseConfig, LLMConfig
 
-sql_tool.close()
+      config = DatabaseConfig(
+         drivername="postgresql",
+         username="postgres",
+         password="password",
+         host="localhost",
+         port=5433,
+         database="P2"
+      )
+      llm_config = LLMConfig(provider="gemini", api_key=LLM_API_KEY, model="models/gemini-1.5-flash", max_tokens=500)
+
+      sql_tool = SQLAgentTool(config, llm_config)
+      try:
+         print("\nQuery 1:")
+         q1_start = time.time()
+         result = agent_tool.process_natural_language_query("what are top courses purchased by maximum students?")
+         print(f"Query 1 total time: {time.time() - q1_start:.2f} seconds")
+         if result.success:
+            print(f"Query executed successfully, found {result.row_count} results:")
+            for row in result.data:
+                  print(row)
+
+         print("\nQuery 2:")
+         q2_start = time.time()
+         result2 = agent_tool.process_natural_language_query("Are there any student named harsh?")
+         print(f"Query 2 total time: {time.time() - q2_start:.2f} seconds")
+         if result2.success:
+            print(f"Query executed successfully, found {result2.row_count} results:")
+            for row in result2.data:
+                  print(row)
+      except Exception as e:
+         print(f"Error processing queries: {e}")
+      finally:
+         agent_tool.close()
+         print(f"Total time: {time.time() - start_time:.2f} seconds")
+   ```
+
+   - Executes:
+     - "What are top courses purchased by maximum students?"
+     - "Are there any student named harsh?"
+   - Logs results to `sql_tool.log`.
+
+3. **Switch LLM Provider**:
+   Edit `script` to use a different LLM. Example for OpenAI:
+   ```python
+   LLM_API_KEY = os.getenv("OPENAI_API_KEY")
+   llm_config = LLMConfig(provider="openai", api_key=LLM_API_KEY, model="gpt-3.5-turbo", max_tokens=150)
+   ```
+   Then run:
+   ```bash
+   python test1.py
+   ```
+   Example for DeepSeek:
+   ```python
+   LLM_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+   llm_config = LLMConfig(provider="deepseek", api_key=LLM_API_KEY, model="deepseek-chat", max_tokens=1024)
+   ```
+   Then run:
+   ```bash
+   python test1.py
+   ```
+
+### Example Output
+
 ```
+LLM config: provider='groq' api_key='<your-groq-api-key>' model='llama-3.3-70b-versatile' temperature=0.7 max_tokens=500
 
-### Output
-
-```
-Extracted parameters: {'search_pattern': 'harsh'}
-SQL with parameters:
--- Find user by first name or last name
-SELECT *
-FROM users
-WHERE first_name ILIKE :search_pattern
-   OR last_name ILIKE :search_pattern
+Query 1:
+Generated SQL:
+SELECT c.id, c.title, COUNT(p.id) as purchase_count
+FROM courses c
+JOIN payments p ON c.id = p.course_id
+GROUP BY c.id, c.title
+ORDER BY purchase_count DESC
 LIMIT 500;
--- Parameter: search_pattern = '%harsh%'
+Parameters: {}
+Query 1 total time: 2.56 seconds
+Query executed successfully, found 14 results:
+{'id': ..., 'title': 'Social Media Marketing (SMM)', 'purchase_count': 6}
+...
 
-Query executed successfully, found 1 results:
-{'id': 1, 'first_name': 'Harsh', 'last_name': 'Dadiya', 'email': 'harshd.wappnet@outlook.com', 'password_hash': 'scrypt:32768:8:1$qZjIi1nspVvAXA3s$56ac099109a62e84031be436ea28791fb1aee8ed5d98bbf01b4b6757ea56c94722e2c48cfa8bb5eb573ddc523f8ed677310afb1a5d2e915c4ae0ee1ea5517465', 'role_id': 4, 'department_id': None, 'manager_id': None, 'created_at': datetime.datetime(2025, 3, 29, 7, 45, 25, 745545)}
+Query 2:
+Generated SQL:
+SELECT * FROM users WHERE full_name ILIKE :search_pattern LIMIT 500;
+Parameters: {'search_pattern': '%harsh%'}
+Query 2 total time: 4.61 seconds
+Query executed successfully, found 2 results:
+{'id': ..., 'full_name': 'Harsh Dadiya', ...}
+...
+Total time: 75.06 seconds
 ```
 
-### Running Tests
+### Customization
 
-The test suite ensures the tool works correctly with PostgreSQL. To run tests:
+- **LLM Provider**: Modify `llm_config` in `test1.py`:
+  - Groq: `provider="groq"`, `model="llama-3.3-70b-versatile"`, `max_tokens=500`
+  - Gemini: `provider="gemini"`, `model="models/gemini-1.5-flash"`, `max_tokens=1024`
+  - OpenAI: `provider="openai"`, `model="gpt-3.5-turbo"`, `max_tokens=150`
+  - DeepSeek: `provider="deepseek"`, `model="deepseek-chat"`, `max_tokens=1024`
+- **Database**: Update `DATABASE_URL` in `.env`.
+- **Queries**: Change the `process_natural_language_query` calls in `test1.py` to test other questions.
 
-```bash
-pytest tests/test_postgresql.py -v
-```
+### Notes
 
-The tests:
-
-- Verify tool initialization.
-- Test schema reflection with temporary tables.
-- Validate query execution and error handling.
-
-**Note**: Tests use temporary tables (`test_users_schema`, `test_query_table`) to avoid modifying production data in `P2`.
+- **Startup Time**: Initial schema reflection takes ~60 seconds due to pre-caching, but queries run in ~2-5 seconds thereafter.
+- **Logging**: Check `sql_tool.log` for detailed execution logs (e.g., LLM response times, SQL generation).
 
 ## Development
 
@@ -159,6 +257,10 @@ dependencies = [
     "sqlalchemy>=2.0",
     "psycopg2-binary>=2.9",
     "pydantic>=2.0",
+    "python-dotenv>=1.0",
+    "groq>=0.4",
+    "google-generativeai>=0.5",
+    "openai>=1.0",
 ]
 
 [project.optional-dependencies]
@@ -176,8 +278,8 @@ dev = [
 
 ## Known Issues
 
-- **Groq API Integration**: Currently uses a placeholder key (`test_key`). Replace with a valid key for full functionality if natural language query generation is implemented.
-- **Permissions**: Ensure the PostgreSQL user has privileges to create and drop temporary tables in the `P2` database.
+- **Groq API Integration**: Requires a valid key in `.env` for natural language query generation.
+- **Permissions**: Ensure the PostgreSQL user has privileges to create and drop temporary tables in the target database.
 
 ## Contributing
 
@@ -193,5 +295,5 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 ## Acknowledgments
 
-- Developed during an internship at Wappnet.
+- Developed during an internship at Wappnet Systems.
 - Built with guidance from Grok (xAI) for testing and debugging.

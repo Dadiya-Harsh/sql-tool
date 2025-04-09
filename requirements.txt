@@ -1,6 +1,10 @@
-groq==0.22.0
-pydantic==2.11.2
+protobuf==6.30.2
+pydantic==2.11.3
 pytest==8.3.5
 python-dotenv==1.1.0
+setuptools==75.8.0
 SQLAlchemy==2.0.37
 sqlparse==0.5.3
+openai
+groq
+google-generativeai
