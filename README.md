@@ -133,50 +133,80 @@ Use the provided `test1.py` script to run example queries. The script connects t
 2. **Run with Default LLM (Groq)**:
 
    ```bash
-
-      #this are contents of test1.py for testing of tool
-      from sql_agent_tool.model import SQLAgentTool, DatabaseConfig, LLMConfig
-
-      config = DatabaseConfig(
-         drivername="postgresql",
-         username="postgres",
-         password="password",
-         host="localhost",
-         port=5433,
-         database="P2"
-      )
-      llm_config = LLMConfig(provider="gemini", api_key=LLM_API_KEY, model="models/gemini-1.5-flash", max_tokens=500)
-
-      sql_tool = SQLAgentTool(config, llm_config)
-      try:
-         print("\nQuery 1:")
-         q1_start = time.time()
-         result = agent_tool.process_natural_language_query("what are top courses purchased by maximum students?")
-         print(f"Query 1 total time: {time.time() - q1_start:.2f} seconds")
-         if result.success:
+    #this are contents of test1.py for testing of tool
+    import time
+    from sql_agent_tool.models import DatabaseConfig, LLMConfig
+    from sql_agent_tool import SQLAgentTool
+    
+    config = DatabaseConfig(
+          drivername="postgresql",
+          username="postgres",
+          password="root",
+          host="localhost",
+          port=5432,
+          database="test_sentiment_analysis"
+       )
+    llm_config = LLMConfig(provider="gemini", api_key="your-api-key", model="models/gemini-1.5-flash", max_tokens=500)
+    
+    agent_tool = SQLAgentTool(config, llm_config)
+    start_time = time.time()
+    try:
+        print("\nQuery 1:")
+        q1_start = time.time()
+        result = agent_tool.process_natural_language_query("what is the overall sentiment score of Vivek")
+        print(f"Query 1 total time: {time.time() - q1_start:.2f} seconds")
+        if result.success:
             print(f"Query executed successfully, found {result.row_count} results:")
             for row in result.data:
-                  print(row)
-
-         print("\nQuery 2:")
-         q2_start = time.time()
-         result2 = agent_tool.process_natural_language_query("Are there any student named harsh?")
-         print(f"Query 2 total time: {time.time() - q2_start:.2f} seconds")
-         if result2.success:
+                print(row)
+    
+        print("\nQuery 2:")
+        q2_start = time.time()
+        result2 = agent_tool.process_natural_language_query("Are there any employee name Vivek?")
+        print(f"Query 2 total time: {time.time() - q2_start:.2f} seconds")
+        if result2.success:
             print(f"Query executed successfully, found {result2.row_count} results:")
             for row in result2.data:
-                  print(row)
-      except Exception as e:
-         print(f"Error processing queries: {e}")
-      finally:
-         agent_tool.close()
-         print(f"Total time: {time.time() - start_time:.2f} seconds")
+                print(row)
+    except Exception as e:
+      print(f"Error processing queries: {e}")
+    finally:
+        agent_tool.close()
+        print(f"Total time: {time.time() - start_time:.2f} seconds")
    ```
 
    - Executes:
      - "What are top courses purchased by maximum students?"
      - "Are there any student named harsh?"
    - Logs results to `sql_tool.log`.
+  
+   - ## Output:
+    ```
+      (harsh) D:\Multi_job_analysis>
+      Parameters: {'name_param': '%Vivek%'}
+      Query 2 total time: 3.14 seconds
+      Query executed successfully, found 1 results:
+      {'id': 1, 'name': 'Vivek', 'email': 'vivek@gmail.com', 'phone': '9304034054', 'status': 'active', 'role': 'Manager'}
+      Total time: 6.71 seconds
+      
+      Parameters: {'name_param': '%Vivek%'}
+      Query 2 total time: 3.14 seconds
+      Query executed successfully, found 1 results:
+      {'id': 1, 'name': 'Vivek', 'email': 'vivek@gmail.com', 'phone': '9304034054', 'status': 'active', 'role': 'Manager'}
+      Total time: 6.71 seconds
+      Parameters: {'name_param': '%Vivek%'}
+      Query 2 total time: 3.14 seconds
+      Query executed successfully, found 1 results:
+      Parameters: {'name_param': '%Vivek%'}
+      Query 2 total time: 3.14 seconds
+      Parameters: {'name_param': '%Vivek%'}
+      Parameters: {'name_param': '%Vivek%'}
+      Query 2 total time: 3.14 seconds
+      Query executed successfully, found 1 results:
+      {'id': 1, 'name': 'Vivek', 'email': 'vivek@gmail.com', 'phone': '9304034054', 'status': 'active', 'role': 'Manager'}
+      Total time: 6.71 seconds
+ 
+    ```
 
 3. **Switch LLM Provider**:
    Edit `script` to use a different LLM. Example for OpenAI:
