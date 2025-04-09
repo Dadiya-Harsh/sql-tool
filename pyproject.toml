@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sql-agent-tool"
-version = "0.1.4"
+version = "0.1.5"
 description = "A secure SQL tool for AI agents to interact with databases"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -15,9 +15,8 @@ dependencies = [
     "pydantic>=2.0",
     "sqlparse>=0.4",
     "python-dotenv>=0.20",
-    "openai",
-    "google-google-generativeai",
-    "google"
+    "openai==1.72.0",
+    "google-google-generativeai==0.8.4"
 ]
 authors = [
     { name = "Harsh Dadiya", email = "harshdadiya@gmail.com" },
