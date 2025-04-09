@@ -1,23 +1,21 @@
 # sql_agent_tool/llm/deepseek.py
-import requests
-from .base import LLMInterface
+from openai import OpenAI
+from .base import LLMInterface, LLMResponse
 
 class DeepSeekLLM(LLMInterface):
-    def __init__(self, api_key: str, model: str = "deepseek-70b"):
-        self.api_key = api_key
+    def __init__(self, api_key: str, model: str = "deepseek-chat"):
+        self.client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
         self.model = model
-        self.base_url = "https://api.deepseek.com/v1/chat/completions"
 
-    def generate_sql(self, prompt: str) -> str:
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
-        }
-        data = {
-            "model": self.model,
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0.3,
-            "max_tokens": 1024
-        }
-        response = requests.post(self.base_url, headers=headers, json=data)
-        return response.json()["choices"][0]["message"]["content"]
+    def generate_sql(self, prompt: str) -> LLMResponse:
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": "You are an SQL generator. Convert the following natural language query into an SQL query."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.3,
+            max_tokens=1024,
+            stream=False
+        )
+        return LLMResponse(content=response.choices[0].message.content.strip())

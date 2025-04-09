@@ -52,6 +52,13 @@ class SQLAgentTool:
         self.engine = self._create_engine()
         self.metadata = MetaData()
         self._reflect_schema()
+        logger.info("SQLAgentTool initialized successfully")
+        logger.info(f"Database connection established: {self.config.database}")
+        logger.info(f"LLM initialized: {self.llmconfigobj.provider} ({self.llmconfigobj.model})")
+        logger.info("Precaching schema information for performance")
+        start_time = time.time()
+        self.get_schema_info(include_sample_data=False)
+        logger.info(f"Schema information cached in {time.time() - start_time:.2f} seconds")
 
     def _create_engine(self) -> 'sqlalchemy.engine.Engine':
         """Create a SQLAlchemy engine for database connection."""
@@ -557,6 +564,10 @@ class SQLAgentTool:
         try:
             # Use LLM to extract parameters
             params = self._call_llm_for_parameters(sql, request, schema_text)
+            #ensure wildcards for ILike
+            for key, value in params.items():
+                if 'ILIKE' in sql.upper() and '%' not in value:
+                    params[key] = f'%{value}%'
             logger.info("Extracted parameters: %s", json.dumps(params))
             # print(f"Extracted parameters: {params}")
             # print(f"SQL with parameters: {sql}")
