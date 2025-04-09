@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="sql-agent-tool",          # Package name (must be unique if publishing to PyPI)
-    version="0.1.3",                # Version number
+    version="0.1.4",                # Version number
     description="A Python tool for interacting with PostgreSQL databases",
     long_description=open("README.md").read(),  # Use README as description
     long_description_content_type="text/markdown",
@@ -11,9 +11,15 @@ setup(
     url="https://github.com/Dadiya-Harsh/sql-tool",  # Replace with your GitHub URL
     packages=find_packages(),       # Automatically find packages (e.g., sql_agent_tool)
     install_requires=[              # List dependencies
-        "sqlalchemy>=2.0",
-        "psycopg2-binary>=2.9",
-        "pydantic>=2.0",
+    "sqlalchemy>=2.0",
+    "psycopg2-binary>=2.9",
+    "groq>=0.1",
+    "pydantic>=2.0",
+    "sqlparse>=0.4",
+    "python-dotenv>=0.20",
+    "openai",
+    "google-google-generativeai",
+    "google",
     ],
     python_requires=">=3.10",       # Specify minimum Python version
     classifiers=[                   # Metadata for PyPI (optional)
