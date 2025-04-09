@@ -1,6 +1,6 @@
 # sql_agent_tool/llm/groq.py
 from groq import Groq
-from .base import LLMInterface
+from .base import LLMInterface, LLMResponse
 
 class GroqLLM(LLMInterface):
     def __init__(self, api_key: str, model: str = "llama-3.3-70b-versatile"):
@@ -14,4 +14,6 @@ class GroqLLM(LLMInterface):
             temperature=0.3,
             max_tokens=1024
         )
-        return response.choices[0].message['content'].strip()
+        return LLMResponse(content = response.choices[0].message.content.strip())
+        # return response.choices[0].message.content.strip()
+
