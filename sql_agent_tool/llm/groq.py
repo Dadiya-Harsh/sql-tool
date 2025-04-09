@@ -14,4 +14,4 @@ class GroqLLM(LLMInterface):
             temperature=0.3,
             max_tokens=1024
         )
-        return response
+        return response.choices[0].message['content'].strip()
