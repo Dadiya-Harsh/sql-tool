@@ -3,6 +3,7 @@
 [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://pypi.org/project/sql-agent-tool/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/Dadiya-Harsh/sql-tool/blob/main/LICENSE)
 [![Tests](https://img.shields.io/badge/tests-pytest-brightgreen.svg)](https://github.com/Dadiya-Harsh/sql-tool/actions)
+[![Anaconda-Server Badge](https://anaconda.org/dadiya-harsh/sql-agent-tool/badges/version.svg)](https://anaconda.org/dadiya-harsh/sql-agent-tool)
 
 The **SQL Agent Tool** is a Python-based utility designed to interact with PostgreSQL databases, allowing users to execute SQL queries safely and efficiently. It integrates with multiple LLM providers (Groq, Google Gemini, OpenAI, DeepSeek) to convert natural language queries into SQL, and includes a robust test suite to ensure reliability.
 
@@ -137,7 +138,7 @@ Use the provided `test1.py` script to run example queries. The script connects t
     import time
     from sql_agent_tool.models import DatabaseConfig, LLMConfig
     from sql_agent_tool import SQLAgentTool
-    
+
     config = DatabaseConfig(
           drivername="postgresql",
           username="postgres",
@@ -147,7 +148,7 @@ Use the provided `test1.py` script to run example queries. The script connects t
           database="test_sentiment_analysis"
        )
     llm_config = LLMConfig(provider="gemini", api_key="your-api-key", model="models/gemini-1.5-flash", max_tokens=500)
-    
+
     agent_tool = SQLAgentTool(config, llm_config)
     start_time = time.time()
     try:
@@ -159,7 +160,7 @@ Use the provided `test1.py` script to run example queries. The script connects t
             print(f"Query executed successfully, found {result.row_count} results:")
             for row in result.data:
                 print(row)
-    
+
         print("\nQuery 2:")
         q2_start = time.time()
         result2 = agent_tool.process_natural_language_query("Are there any employee name Vivek?")
@@ -179,34 +180,35 @@ Use the provided `test1.py` script to run example queries. The script connects t
      - "What are top courses purchased by maximum students?"
      - "Are there any student named harsh?"
    - Logs results to `sql_tool.log`.
-  
+
    - ## Output:
-    ```
-      (harsh) D:\Multi_job_analysis>
-      Parameters: {'name_param': '%Vivek%'}
-      Query 2 total time: 3.14 seconds
-      Query executed successfully, found 1 results:
-      {'id': 1, 'name': 'Vivek', 'email': 'vivek@gmail.com', 'phone': '9304034054', 'status': 'active', 'role': 'Manager'}
-      Total time: 6.71 seconds
-      
-      Parameters: {'name_param': '%Vivek%'}
-      Query 2 total time: 3.14 seconds
-      Query executed successfully, found 1 results:
-      {'id': 1, 'name': 'Vivek', 'email': 'vivek@gmail.com', 'phone': '9304034054', 'status': 'active', 'role': 'Manager'}
-      Total time: 6.71 seconds
-      Parameters: {'name_param': '%Vivek%'}
-      Query 2 total time: 3.14 seconds
-      Query executed successfully, found 1 results:
-      Parameters: {'name_param': '%Vivek%'}
-      Query 2 total time: 3.14 seconds
-      Parameters: {'name_param': '%Vivek%'}
-      Parameters: {'name_param': '%Vivek%'}
-      Query 2 total time: 3.14 seconds
-      Query executed successfully, found 1 results:
-      {'id': 1, 'name': 'Vivek', 'email': 'vivek@gmail.com', 'phone': '9304034054', 'status': 'active', 'role': 'Manager'}
-      Total time: 6.71 seconds
- 
-    ```
+
+   ```
+     (harsh) D:\Multi_job_analysis>
+     Parameters: {'name_param': '%Vivek%'}
+     Query 2 total time: 3.14 seconds
+     Query executed successfully, found 1 results:
+     {'id': 1, 'name': 'Vivek', 'email': 'vivek@gmail.com', 'phone': '9304034054', 'status': 'active', 'role': 'Manager'}
+     Total time: 6.71 seconds
+
+     Parameters: {'name_param': '%Vivek%'}
+     Query 2 total time: 3.14 seconds
+     Query executed successfully, found 1 results:
+     {'id': 1, 'name': 'Vivek', 'email': 'vivek@gmail.com', 'phone': '9304034054', 'status': 'active', 'role': 'Manager'}
+     Total time: 6.71 seconds
+     Parameters: {'name_param': '%Vivek%'}
+     Query 2 total time: 3.14 seconds
+     Query executed successfully, found 1 results:
+     Parameters: {'name_param': '%Vivek%'}
+     Query 2 total time: 3.14 seconds
+     Parameters: {'name_param': '%Vivek%'}
+     Parameters: {'name_param': '%Vivek%'}
+     Query 2 total time: 3.14 seconds
+     Query executed successfully, found 1 results:
+     {'id': 1, 'name': 'Vivek', 'email': 'vivek@gmail.com', 'phone': '9304034054', 'status': 'active', 'role': 'Manager'}
+     Total time: 6.71 seconds
+
+   ```
 
 3. **Switch LLM Provider**:
    Edit `script` to use a different LLM. Example for OpenAI:
