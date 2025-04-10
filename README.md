@@ -120,6 +120,12 @@ pip install sql-agent-tool
    DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/yourdatabase
    ```
 
+### Option 3: Conda
+
+```bash
+conda install dadiya-harsh::sql-agent-tool
+```
+
 ## Usage
 
 The SQL Agent Tool converts natural language queries into SQL and executes them against your PostgreSQL database, supporting multiple LLM providers for flexibility.
