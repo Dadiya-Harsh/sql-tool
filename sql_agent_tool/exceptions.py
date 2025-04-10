@@ -78,9 +78,3 @@ class LLMGenerationError(SQLAgentError):
         self.error_detail = error_detail
         message = f"LLM generation failed for prompt: '{prompt}'. Error: {error_detail}"
         super().__init__(message)
-
-class ConfigurationError(Exception):
-    """Raised when invalid or missing configuration is detected"""
-    def __init__(self, message="Invalid configuration detected"):
-        self.message = message
-        super().__init__(self.message)

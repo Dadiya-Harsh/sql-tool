@@ -1,33 +1,12 @@
-# cli/commands/update.py
 import click
-import requests
-import os
-import sys
-from termcolor import colored
+from sql_agent_tool import SQLAgentTool
+from sql_agent_tool.models import DatabaseConfig, LLMConfig
 
 @click.command()
-def update():
-    """Update to latest version"""
-    try:
-        response = requests.get(
-            "https://api.github.com/repos/Dadiya-Harsh/sql-tool/releases/latest"
-        )
-        response.raise_for_status()
-        release = response.json()
-        version = release["tag_name"]
-        
-        for asset in release["assets"]:
-            if asset["name"].endswith(".tar.gz"):
-                download_url = asset["browser_download_url"]
-                break
-        else:
-            click.echo(colored("No valid package found", "red"))
-            sys.exit(1)
-            
-        click.echo(colored(f"Updating to version {version}...", "green"))
-        os.system(f"pip install {download_url} --force-reinstall")
-        click.echo(colored("Update complete. Please restart the CLI.", "green"))
-        
-    except Exception as e:
-        click.echo(colored(f"Update failed: {str(e)}", "red"))
-        sys.exit(1)
+@click.pass_context
+def update(ctx):
+    """Update records in the database (disabled in read-only mode)."""
+    if ctx.obj['read_only']:
+        click.echo("Update command is disabled in read-only mode.", err=True)
+    else:
+        click.echo("Update command not yet implemented.")
