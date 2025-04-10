@@ -31,23 +31,45 @@ Whether you're building an AI-powered chatbot, a data analysis tool, or any appl
 
 ```
 sql-tool/
+├── bin/
+│   └── sql-agent                  # CLI execution script
+├── cli/
+│   ├── commands/
+│   │   ├── __init__.py            # CLI commands package
+│   │   ├── init.py                # Initialization command
+│   │   ├── query.py               # Query execution command
+│   │   ├── shell.py               # Interactive shell command
+│   │   └── update.py              # Update command
+│   ├── shell_utils.py             # Shell utilities
+│   ├── __init__.py                # CLI package
+│   └── cli.py                     # Main CLI implementation
 ├── sql_agent_tool/
-│   ├── __init__.py
-│   ├── core.py          # Main SQLAgentTool implementation
-│   ├── exceptions.py    # Custom exceptions
-│   ├── models.py        # Database configuration models (e.g., DatabaseConfig)
-│   └── llm/             # LLM integrations
-│       ├── base.py
-│       ├── groq.py
-│       ├── gemini.py
-│       ├── openai.py
-│       ├── deepseek.py
-│       └── factory.py
+│   ├── llm/
+│   │   ├── base.py                # Base LLM class
+│   │   ├── deepseek.py            # DeepSeek LLM integration
+│   │   ├── factory.py             # LLM factory
+│   │   ├── gemini.py              # Gemini LLM integration
+│   │   ├── groq.py                # Groq LLM integration
+│   │   ├── openai.py              # OpenAI LLM integration
+│   │   └── __init__.py            # LLM package
+│   ├── __init__.py                # Main package
+│   ├── config.py                  # Configuration management
+│   ├── core.py                    # Core SQLAgentTool implementation
+│   ├── exceptions.py              # Custom exceptions
+│   ├── models.py                  # Database models
+│   └── utils.py                   # Utility functions
 ├── tests/
-│   └── test_postgresql.py  # Test suite for PostgreSQL integration
-├── pyproject.toml       # Project configuration and dependencies
-├── test1.py             # Example script for usage
-└── README.md            # This file
+│   ├── __init__.py                # Tests package
+│   ├── test_core.py               # Core functionality tests
+│   ├── test_gemini_llm.py         # Gemini LLM tests
+│   ├── test_postgresql.py         # PostgreSQL integration tests
+│   └── test_sql_agent.py          # SQL agent tests
+├── .gitignore                     # Git ignore rules
+├── LICENSE                        # License file
+├── pyproject.toml                 # Project configuration
+├── README.md                      # Project documentation
+├── requirements.txt               # Python dependencies
+└── setup.py
 ```
 
 ## Prerequisites
