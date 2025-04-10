@@ -11,6 +11,13 @@ The **SQL Agent Tool** is a Python-based utility designed to interact with Postg
 
 SQL Agent Tool is designed to bridge the gap between AI agents and live SQL databases. Its primary goal is to eliminate the repetitive and error-prone process of writing boilerplate code for database interactions in AI-driven projects. Specifically, it addresses the following challenges:
 
+1. **Schema Discovery**: Automatically extracts and translates database schemas into a format that AI agents can understand, reducing the need for manual schema definitions.
+2. **Query Execution**: Simplifies the execution of SQL queries, allowing AI agents to retrieve and manipulate data without requiring deep knowledge of SQL syntax.
+3. **Boilerplate Reduction**: Minimizes the amount of custom code developers need to write for database connections, query building, and result parsing.
+4. **AI-Friendly Interface**: Provides a standardized interface for AI agents to interact with databases, making it easier to integrate AI workflows with live data.
+
+Whether you're building an AI-powered chatbot, a data analysis tool, or any application that requires real-time database access, SQL Agent Tool streamlines the process and accelerates development.
+
 
 ## Features
 
