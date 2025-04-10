@@ -7,6 +7,10 @@
 
 The **SQL Agent Tool** is a Python-based utility designed to interact with PostgreSQL databases, allowing users to execute SQL queries safely and efficiently. It integrates with multiple LLM providers (Groq, Google Gemini, OpenAI, DeepSeek) to convert natural language queries into SQL, and includes a robust test suite to ensure reliability.
 
+## Purpose or Objective of Project:
+
+SQL Agent Tool is designed to bridge the gap between AI agents and live SQL databases. Its primary goal is to eliminate the repetitive and error-prone process of writing boilerplate code for database interactions in AI-driven projects. Specifically, it addresses the following challenges:
+
 ## Features
 
 - **Database Connection**: Connects to PostgreSQL databases using SQLAlchemy.
