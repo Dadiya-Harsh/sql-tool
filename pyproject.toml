@@ -21,7 +21,7 @@ dependencies = [
 authors = [
     { name = "Harsh Dadiya", email = "harshdadiya@gmail.com" },
 ]
-license = { file = "LICENSE" }
+license = { text = "MIT" }
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
