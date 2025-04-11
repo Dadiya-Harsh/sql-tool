@@ -1,4 +1,4 @@
-# End-User License Agreement (EULA)
+# End-User License Agreement (EULA) for future
 
 This End-User License Agreement ("Agreement") is a legal agreement between you (either an individual or a legal entity) and **Harsh Dadiya**, the author of the software product identified as **sql-tool** (the "Software").
 
