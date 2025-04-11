@@ -1,5 +1,7 @@
 # SQL Agent Tool
 
+> A lightweight, LLM-integrated SQL utility for intelligent, secure PostgreSQL querying.
+
 [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://pypi.org/project/sql-agent-tool/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/Dadiya-Harsh/sql-tool/blob/main/LICENSE)
 [![Tests](https://img.shields.io/badge/tests-pytest-brightgreen.svg)](https://github.com/Dadiya-Harsh/sql-tool/actions)
@@ -250,29 +252,48 @@ Use the provided `test1.py` script to run example queries. The script connects t
    ```
 
 3. **Switch LLM Provider**:
+
+| Provider | Model Example             | Environment Variable |
+| -------- | ------------------------- | -------------------- |
+| Groq     | `llama-3.3-70b-versatile` | `GROQ_API_KEY`       |
+| OpenAI   | `gpt-3.5-turbo`           | `OPENAI_API_KEY`     |
+| Gemini   | `gemini-1.5-flash`        | `GEMINI_API_KEY`     |
+| DeepSeek | `deepseek-chat`           | `DEEPSEEK_API_KEY`   |
+
+Update your script:
+
+````python
+llm_config = LLMConfig(provider="openai", api_key=os.getenv("OPENAI_API_KEY"), model="gpt-3.5-turbo", max_tokens=500)
+
    Edit `script` to use a different LLM. Example for OpenAI:
    ```python
    LLM_API_KEY = os.getenv("OPENAI_API_KEY")
    llm_config = LLMConfig(provider="openai", api_key=LLM_API_KEY, model="gpt-3.5-turbo", max_tokens=150)
-   ```
-   Then run:
-   ```bash
-   python test1.py
-   ```
-   Example for DeepSeek:
-   ```python
-   LLM_API_KEY = os.getenv("DEEPSEEK_API_KEY")
-   llm_config = LLMConfig(provider="deepseek", api_key=LLM_API_KEY, model="deepseek-chat", max_tokens=1024)
-   ```
-   Then run:
-   ```bash
-   python test1.py
-   ```
+````
+
+Then run:
+
+```bash
+python test1.py
+```
+
+Example for DeepSeek:
+
+```python
+LLM_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+llm_config = LLMConfig(provider="deepseek", api_key=LLM_API_KEY, model="deepseek-chat", max_tokens=1024)
+```
+
+Then run:
+
+```bash
+python test1.py
+```
 
 ### Example Output
 
 ```
-LLM config: provider='groq' api_key='<your-groq-api-key>' model='llama-3.3-70b-versatile' temperature=0.7 max_tokens=500
+LLM config: provider='deepdeek' api_key='<your-groq-api-key>' model='deepseek-cht' temperature=0.7 max_tokens=1024
 
 Query 1:
 Generated SQL:
@@ -428,9 +449,14 @@ dev = [
 4. Push to the branch (`git push origin feature/your-feature`).
 5. Open a pull request.
 
-## License
+## 📜 License
 
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+This project is licensed under a **dual license** model:
+
+- **Apache License 2.0** – For open source usage. See the [`LICENSE`](./LICENSE) file for full terms.
+- **Commercial License** – For proprietary or commercial use, please [contact the author](mailto:harshdadiya@gmail.com) to obtain a commercial license.
+
+By using or contributing to this project, you agree to comply with the terms of the applicable license.
 
 ## Acknowledgments
 
