@@ -1,6 +1,8 @@
 import click
 import yaml
 import os
+import yaml
+import os
 from .commands.init import init
 from .commands.query import query
 from .commands.shell import shell
@@ -69,6 +71,7 @@ def load_config(config_path):
 @click.option('--read-only', is_flag=True, default=True, help='Enable read-only mode')
 @click.pass_context
 def cli(ctx, config, host, port, dbname, user, password, provider, api_key, model, max_rows, read_only):
+def cli(ctx, config, host, port, dbname, user, password, provider, api_key, model, max_rows, read_only):
     """SQL Agent CLI Tool - Manage databases with LLM-powered queries."""
     # If --config is provided, reload config to override defaults
     if config:
@@ -93,7 +96,7 @@ def cli(ctx, config, host, port, dbname, user, password, provider, api_key, mode
     )
     ctx.obj['llm_config'] = LLMConfig(
         provider=provider,
-        api_key=api_key,
+        api_key=api_key if api_key else None,
         model=model,
         temperature=0.7,  # Keep as default unless in config
         max_tokens=1500   # Keep as default unless in config
