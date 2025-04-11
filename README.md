@@ -34,7 +34,7 @@ Whether you're building an AI-powered chatbot, a data analysis tool, or any appl
 ```
 sql-tool/
 ├── bin/
-│   └── sql-agent                  # CLI execution script
+│   └── sql-agent-tool             # CLI execution script
 ├── cli/
 │   ├── commands/
 │   │   ├── __init__.py            # CLI commands package
@@ -257,7 +257,7 @@ Use the provided `test1.py` script to run example queries. The script connects t
 | -------- | ------------------------- | -------------------- |
 | Groq     | `llama-3.3-70b-versatile` | `GROQ_API_KEY`       |
 | OpenAI   | `gpt-3.5-turbo`           | `OPENAI_API_KEY`     |
-| Gemini   | `gemini-1.5-flash`        | `GEMINI_API_KEY`     |
+| Gemini   | `models/gemini-1.5-flash` | `GEMINI_API_KEY`     |
 | DeepSeek | `deepseek-chat`           | `DEEPSEEK_API_KEY`   |
 
 Update your script:
@@ -387,16 +387,6 @@ Rows returned: 4
 {'first_name': 'Dhruvin', 'last_name': 'Chandekar'}
 SQL>  [exit]: exit
 ```
-
-### Customization
-
-- **LLM Provider**: Modify `llm_config` in `test1.py`:
-  - Groq: `provider="groq"`, `model="llama-3.3-70b-versatile"`, `max_tokens=500`
-  - Gemini: `provider="gemini"`, `model="models/gemini-1.5-flash"`, `max_tokens=1024`
-  - OpenAI: `provider="openai"`, `model="gpt-3.5-turbo"`, `max_tokens=150`
-  - DeepSeek: `provider="deepseek"`, `model="deepseek-chat"`, `max_tokens=1024`
-- **Database**: Update `DATABASE_URL` in `.env`.
-- **Queries**: Change the `process_natural_language_query` calls in `test1.py` to test other questions.
 
 ### Notes
 
