@@ -1,3 +1,4 @@
+#sql_agent_tool/exceptions.py
 class SQLAgentError(Exception):
     """Base exception class for all SQLAgentTool-related errors."""
     def __init__(self, message: str = "An error occurred in SQLAgentTool"):

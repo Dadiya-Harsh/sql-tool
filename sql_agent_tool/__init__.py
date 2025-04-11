@@ -1,3 +1,4 @@
+#sql_agent_tool/__init__.py
 from .core import SQLAgentTool
 from .models import DatabaseConfig, QueryResult
 
