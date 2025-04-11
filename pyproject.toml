@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sql-agent-tool"
-version = "0.1.8"
+version = "0.1.9"
 description = "A secure SQL tool for AI agents to interact with databases"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -43,4 +43,4 @@ dev = [
 ]
 
 [project.scripts]
-sql-agent = "cli.cli:cli"
+sql-agent-tool = "cli.cli:cli"

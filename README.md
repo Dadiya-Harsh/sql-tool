@@ -299,6 +299,74 @@ Query executed successfully, found 2 results:
 Total time: 75.06 seconds
 ```
 
+### Running Tool with CLI
+
+Use the sql-agent CLI for interactive or one-off queries after installing the package.
+
+1.  Basic Commands:
+
+- `sql-agent-tool --help`: Display help message and exit.
+- `sql-agent-tool --version`: Display version and exit.
+- `sql-agent-tool shell`: Start the interactive shell.
+- `sql-agent-tool init`: Initialize Database.
+
+#### Configuration:
+
+The tool loads configuration from a config.yaml file in the current working directory by default. If not found, it uses hardcoded defaults. You can also specify a custom config file with the --config option.
+
+Sample config.yaml
+
+Create a config.yaml in directory where you run the tool:
+
+```
+   database:
+      host: localhost
+      port: 5433
+      dbname: P1
+      user: postgres
+      require_ssl: false
+   llm:
+      provider: groq
+      model: llama-3.3-70b-versatile
+```
+
+#### Custom Configuration
+
+Specify a different config file:
+
+```
+sql-agent-tool --config /path/to/custom-config.yaml shell
+```
+
+Example:
+
+With config.yaml
+
+```
+sql-agent-tool shell
+```
+
+Output:
+
+```
+$ python bin/sql-agent-tool shell
+Password:
+Api key:
+Connected to P1 on localhost:5433. Type 'exit' to quit.
+SQL>  [exit]: list all the users name
+Generated SQL:
+SELECT first_name, last_name
+FROM users
+LIMIT 1000
+Parameters: {}
+Rows returned: 4
+{'first_name': 'Harsh', 'last_name': 'Dadiya'}
+{'first_name': 'Jay', 'last_name': 'Dhumale'}
+{'first_name': 'Hitesh', 'last_name': 'Kumar'}
+{'first_name': 'Dhruvin', 'last_name': 'Chandekar'}
+SQL>  [exit]: exit
+```
+
 ### Customization
 
 - **LLM Provider**: Modify `llm_config` in `test1.py`:

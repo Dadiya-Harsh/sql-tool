@@ -55,9 +55,6 @@ def load_config(config_path):
     }
 
 @click.group()
-@click.option('--verbose', is_flag=True, help='Enable verbose output')
-@click.option('--debug', is_flag=True, help='Enable debug output')
-@click.option('--db_url', help='Database connection URL (e.g., postgresql://user:password@host:port/dbname) you can use this instead of --host, --port, --dbname, --user, and --password')   
 @click.option('--config', type=click.Path(exists=True), help='Path to configuration YAML file')
 @click.option('--host', default=lambda: load_config('config.yaml').get('host'), help='Database host')
 @click.option('--port', default=lambda: load_config('config.yaml').get('port'), help='Database port')

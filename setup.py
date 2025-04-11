@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="sql-agent-tool",          # Package name (must be unique if publishing to PyPI)
-    version="0.1.8",                # Version number
+    version="0.1.9",                # Version number
     description="A Python tool for interacting with PostgreSQL databases",
     long_description=open("README.md").read(),  # Use README as description
     long_description_content_type="text/markdown",
@@ -18,7 +18,9 @@ setup(
     "sqlparse>=0.4",
     "python-dotenv>=0.20",
     "openai>=1.0",
-    "google-generativeai>=0.3"
+    "google-generativeai>=0.3",
+    "click>=8.1.7",
+    "pyyaml>=6.0",
     ],
     python_requires=">=3.10",       # Specify minimum Python version
     classifiers=[                   # Metadata for PyPI (optional)
