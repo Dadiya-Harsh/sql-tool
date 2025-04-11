@@ -71,7 +71,6 @@ def load_config(config_path):
 @click.option('--read-only', is_flag=True, default=True, help='Enable read-only mode')
 @click.pass_context
 def cli(ctx, config, host, port, dbname, user, password, provider, api_key, model, max_rows, read_only):
-def cli(ctx, config, host, port, dbname, user, password, provider, api_key, model, max_rows, read_only):
     """SQL Agent CLI Tool - Manage databases with LLM-powered queries."""
     # If --config is provided, reload config to override defaults
     if config:
