@@ -46,6 +46,14 @@ sql-tool/
 │   ├── __init__.py                # CLI package
 │   └── cli.py                     # Main CLI implementation
 ├── sql_agent_tool/
+│   ├── database/
+│   │   ├── __init__.py                      # Database package
+│   │   ├── database_base.py                 # Base Database class
+│   │   ├── database_mssql.py                # MSSQL database implementation
+│   │   ├── database_mysql.py                # MySQL database implementation
+│   │   ├── database_oracle.py               # Oracle database implementation
+|   |   ├── database_sqlite.py               # SQLite database implementation
+|   |   └── database_postgresql.py           # PostgreSQL database implementation
 │   ├── llm/
 │   │   ├── base.py                # Base LLM class
 │   │   ├── deepseek.py            # DeepSeek LLM integration
