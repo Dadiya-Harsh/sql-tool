@@ -1,123 +1,100 @@
 import pytest
 import os
-from sqlalchemy import create_engine, text
-from sqlalchemy.exc import SQLAlchemyError  # Import SQLAlchemyError
-from sql_agent_tool import SQLAgentTool, DatabaseConfig
-from sql_agent_tool.exceptions import (
-    SchemaReflectionError, SQLValidationError, QueryExecutionError
-)
+import sys
+from unittest.mock import MagicMock, patch
+from sqlalchemy import create_engine, MetaData
+from sql_agent_tool.models import DatabaseConfig, QueryResult
+from sql_agent_tool.database.database_postgresql import PostgreSQLDatabase
 
-# Replace with your actual Groq API key or set it in an environment variable
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "test_key")
+# Add project root to sys.path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-
-# Fixture for PostgreSQL configuration
+# Fixture for DatabaseConfig
 @pytest.fixture
-def postgresql_config():
-    """Provide a PostgreSQL database configuration using environment variables."""
+def db_config():
     return DatabaseConfig(
         drivername="postgresql",
-        username=os.getenv("PG_USER", "postgres"),
-        password=os.getenv("PG_PASSWORD", "password"),
-        host=os.getenv("PG_HOST", "localhost"),
-        port=int(os.getenv("PG_PORT", 5433)),
-        database=os.getenv("PG_DATABASE", "P2")
+        username="postgres",
+        password="password",
+        host="localhost",
+        port=5432,
+        database="P1"
     )
 
-
-# Fixture to initialize SQLAgentTool with PostgreSQL
+# Fixture for PostgreSQLDatabase instance
 @pytest.fixture
-def sql_tool_postgresql(postgresql_config):
-    """Initialize SQLAgentTool with a PostgreSQL database."""
-    tool = SQLAgentTool(postgresql_config, groq_api_key=GROQ_API_KEY)
-    yield tool
-    tool.close()
+def pg_db(db_config):
+    return PostgreSQLDatabase(db_config)
 
+# Mocked engine and connection
+@pytest.fixture
+def mock_engine():
+    engine = MagicMock()
+    connection = MagicMock()
+    engine.connect.return_value = connection
+    connection.execute.return_value = MagicMock(mappings=lambda: [{"id": 1, "name": "Vivek"}])
+    connection.keys.return_value = ["id", "name"]
+    connection.rowcount = 1
+    return engine
 
-# Test initialization
-def test_sql_agent_initialization(sql_tool_postgresql):
-    """Test that SQLAgentTool initializes correctly with PostgreSQL."""
-    assert sql_tool_postgresql.engine is not None
-    assert sql_tool_postgresql.config.drivername == "postgresql"
-    assert sql_tool_postgresql.read_only is True
-    assert sql_tool_postgresql.max_rows == 1000
+# Test create_engine
+def test_create_engine(pg_db, mock_engine):
+    with patch("sqlalchemy.create_engine", return_value=mock_engine):
+        engine = pg_db.create_engine()
+        assert engine == mock_engine
+        assert pg_db.engine == mock_engine
 
+# Test reflect_schema
+def test_reflect_schema(pg_db, mock_engine):
+    with patch("sqlalchemy.create_engine", return_value=mock_engine):
+        with patch.object(MetaData, "reflect"):
+            pg_db.create_engine()
+            pg_db.reflect_schema()
+            assert pg_db.metadata is not None
 
-# Test schema reflection with a temporary table
-def test_schema_reflection(sql_tool_postgresql):
-    """Test schema reflection with a temporary table in PostgreSQL."""
-    test_table = "test_users_schema"  # Unique name to avoid conflicts
-    with sql_tool_postgresql.engine.connect() as conn:
-        # Clean up if the test table exists (safe to drop since it’s temporary)
-        conn.execute(text(f"DROP TABLE IF EXISTS {test_table}"))
-        conn.execute(text(f"CREATE TABLE {test_table} (id SERIAL PRIMARY KEY, name TEXT)"))
-        conn.commit()
+# Test get_schema_info
+def test_get_schema_info(pg_db, mock_engine):
+    with patch("sqlalchemy.create_engine", return_value=mock_engine):
+        pg_db.create_engine()
+        pg_db.metadata = MetaData()
+        pg_db.metadata.tables = {"employees": MagicMock(columns=[MagicMock(name="id", type="INTEGER"), MagicMock(name="name", type="VARCHAR")])}
+        with patch.object(mock_engine.connect(), "execute") as mock_execute:
+            mock_execute.return_value = MagicMock(mappings=lambda: [{"id": 1, "name": "Vivek"}])
+            schema_info = pg_db.get_schema_info(include_sample_data=True)
+            assert "tables" in schema_info
+            assert "employees" in schema_info["tables"]
+            assert schema_info["tables"]["employees"]["columns"][0]["name"] == "id"
+            assert schema_info["tables"]["employees"]["sample_data"][0]["name"] == "Vivek"
 
-    sql_tool_postgresql._reflect_schema()
-    schema = sql_tool_postgresql.get_schema_info()
-    assert test_table in schema["tables"]
-    assert len(schema["tables"][test_table]["columns"]) == 2
-    assert schema["tables"][test_table]["columns"][0]["name"] == "id"
+# Test execute_query
+def test_execute_query(pg_db, mock_engine):
+    with patch("sqlalchemy.create_engine", return_value=mock_engine):
+        pg_db.create_engine()
+        result = pg_db.execute_query("SELECT * FROM employees")
+        assert isinstance(result, QueryResult)
+        assert result.success
+        assert result.data[0]["id"] == 1
+        assert result.columns == ["id", "name"]
 
-    # Clean up after the test
-    with sql_tool_postgresql.engine.connect() as conn:
-        conn.execute(text(f"DROP TABLE {test_table}"))
-        conn.commit()
+# Test validate_and_sanitize_sql (valid query)
+def test_validate_and_sanitize_sql_valid(pg_db):
+    query = "SELECT * FROM employees"
+    sanitized = pg_db.validate_and_sanitize_sql(query)
+    assert sanitized == query
 
+# Test validate_and_sanitize_sql (invalid query)
+def test_validate_and_sanitize_sql_invalid(pg_db):
+    query = "DROP TABLE employees"
+    with pytest.raises(ValueError):
+        pg_db.validate_and_sanitize_sql(query)
 
-# Test schema reflection failure
-def test_schema_reflection_failure(mocker, postgresql_config):
-    """Test schema reflection failure handling in PostgreSQL."""
-    tool = SQLAgentTool(postgresql_config, groq_api_key=GROQ_API_KEY)
-    # Mock the reflect method to raise an SQLAlchemyError
-    mocker.patch(
-        "sqlalchemy.sql.schema.MetaData.reflect",
-        side_effect=SQLAlchemyError("Mocked DB error")  # Use SQLAlchemyError instead of Exception
-    )
-
-    with pytest.raises(SchemaReflectionError) as exc_info:
-        tool._reflect_schema()
-    assert "Mocked DB error" in str(exc_info.value)
-    tool.close()
-
-
-# Test executing a valid query
-def test_execute_query_success(sql_tool_postgresql):
-    """Test executing a valid SQL query in PostgreSQL."""
-    test_table = "test_query_table"  # Unique name for this test
-    with sql_tool_postgresql.engine.connect() as conn:
-        conn.execute(text(f"DROP TABLE IF EXISTS {test_table}"))
-        conn.execute(text(f"CREATE TABLE {test_table} (id SERIAL PRIMARY KEY, value TEXT)"))
-        conn.execute(text(f"INSERT INTO {test_table} (value) VALUES ('test_value') RETURNING id"))
-        conn.commit()
-
-    result = sql_tool_postgresql.execute_query(f"SELECT * FROM {test_table} WHERE id = :id", {"id": 1})
-    assert result.success is True
-    assert result.row_count == 1
-    assert result.data[0]["value"] == "test_value"
-    assert "id" in result.columns
-
-    # Clean up
-    with sql_tool_postgresql.engine.connect() as conn:
-        conn.execute(text(f"DROP TABLE {test_table}"))
-        conn.commit()
-
-
-# Test executing an invalid query (read-only violation)
-def test_execute_query_validation_failure(sql_tool_postgresql):
-    """Test executing an invalid SQL query raises SQLValidationError."""
-    with pytest.raises(SQLValidationError) as exc_info:
-        sql_tool_postgresql.execute_query("INSERT INTO nonexistent (id) VALUES (1)")
-    assert "INSERT commands not allowed" in str(exc_info.value)
-
-
-# Test query execution failure (nonexistent table)
-def test_execute_query_execution_failure(sql_tool_postgresql):
-    """Test executing a query on a nonexistent table raises QueryExecutionError."""
-    with pytest.raises(QueryExecutionError) as exc_info:
-        sql_tool_postgresql.execute_query("SELECT * FROM nonexistent_table")
-    assert "nonexistent_table" in str(exc_info.value)
-
+# Optional: Test with real database (uncomment and configure when ready)
+# @pytest.mark.integration
+# def test_real_database_connection(pg_db):
+#     pg_db.create_engine()
+#     schema_info = pg_db.get_schema_info()
+#     assert "tables" in schema_info
+#     pg_db.close()
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+    pytest.main([__file__])

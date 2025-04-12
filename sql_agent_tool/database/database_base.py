@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, Any, List, Optional, Tuple
 from sqlalchemy.engine import Engine, Result
 from sql_agent_tool.models import DatabaseConfig, QueryResult
+# from sql_agent_tool import models
 
 class DatabaseBase(ABC):
     def __init__(self, config: DatabaseConfig):

@@ -1,4 +1,4 @@
-#sql_agent_tool/cli/cli.py
+#sql_agent_tool/core.py
 import json
 import re
 import logging
