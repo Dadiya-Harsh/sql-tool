@@ -3,8 +3,14 @@ import sqlalchemy
 from sqlalchemy.orm import Session
 from psycopg2 import Error as Psycopg2Error
 from database_base import DatabaseBase
-from sql_agent_tool.models import DatabaseConfig, QueryResult
 from typing import Dict, Any, List, Optional, Tuple
+
+import sys
+import os
+# Add project root to Python path
+sys.path.append(r'E:\Wappnet internship\sql-tool')
+from sql_agent_tool.models import DatabaseConfig, QueryResult
+
 
 class PostgreSQLDatabase(DatabaseBase):
     def __init__(self, config: DatabaseConfig):
@@ -180,18 +186,18 @@ class PostgreSQLDatabase(DatabaseBase):
         except Exception as e:
             raise ValueError(f"Batch execution failed: {self.normalize_error(e)}")
 
-# if __name__ == "__main__":
-#     # Example usage
-#     config = DatabaseConfig(
-#         drivername="postgresql",  # Added drivername (required by DatabaseConfig)
-#         username="postgres",
-#         password="password",
-#         host="localhost",
-#         port=543,  # Corrected to 5432 (PostgreSQL default is 5432, not 543)
-#         database="P1"
-#     )
-#     db = PostgreSQLDatabase(config)
-#     db.create_engine()
-#     schema_info = db.get_schema_info(include_sample_data=True)
-#     print(schema_info)
-#     db.close()
+if __name__ == "__main__":
+    # Example usage
+    config = DatabaseConfig(
+        drivername="postgresql",  # Added drivername (required by DatabaseConfig)
+        username="postgres",
+        password="password",
+        host="localhost",
+        port=5433,  # Corrected to 5432 (PostgreSQL default is 5432, not 543)
+        database="P1"
+    )
+    db = PostgreSQLDatabase(config)
+    db.create_engine()
+    schema_info = db.get_schema_info(include_sample_data=True)
+    print(schema_info)
+    db.close()

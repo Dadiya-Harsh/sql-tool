@@ -1,12 +1,7 @@
 #sql_agent_tool/__init__.py
-# from core import SQLAgentTool
-# from models import DatabaseConfig, QueryResult, LLMConfig
-# from database import database_base, database_postgresql, database_mssql, database_mysql, database_sqlite
-# from database.database_base import DatabaseBase
-# sql_agent_tool/__init__.py
 from .core import SQLAgentTool
 from .models import DatabaseConfig, LLMConfig
-from .database.database_postgresql import PostgreSQLDatabase
+# from ..database.database_postgresql import PostgreSQLDatabase
 
 __version__ = "0.1.9"
 __all__ = ["SQLAgentTool", "DatabaseConfig", "QueryResult", "LLMConfig"]

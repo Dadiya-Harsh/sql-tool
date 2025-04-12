@@ -19,6 +19,17 @@ class DatabaseConfig(BaseModel):
         if v not in allowed:
             raise ValueError(f'Driver must be one of {allowed}')
         return v
+    
+    def build_connection_string(self) -> str:
+        """Build a SQLAlchemy-compatible connection string."""
+        if self.drivername == "sqlite":
+            return f"sqlite:///{self.database}"
+        
+        params = "&".join(f"{k}={v}" for k, v in self.query.items())
+        ssl_param = "?ssl=true" if self.require_ssl else ""
+        port_part = f":{self.port}" if self.port else ""
+        return f"{self.drivername}://{self.username}:{self.password}@{self.host}{port_part}/{self.database}{ssl_param}{f'&{params}' if params else ''}"
+        # return self.connection_string
 
 class QueryResult(BaseModel):
     """Model for query results"""
