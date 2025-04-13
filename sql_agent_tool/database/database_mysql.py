@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-# sql-agent-tool/databse/database_mysql_direct.py
-
-# -*- coding: utf-8 -*-
-# sql-agent-tool/database/database_mysql_direct.py
+# sql-agent-tool/database/database_mysql.py
 
 import re
 import logging
