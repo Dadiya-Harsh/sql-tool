@@ -73,6 +73,7 @@ def cli(ctx, config, host, port, dbname, user, password, provider, api_key, mode
     # If --config is provided, reload config to override defaults
     if config:
         config_data = load_config(config)
+        drivername = config_data.get('drivername', 'postgresql')
         host = config_data.get('host', host)
         port = config_data.get('port', port)
         dbname = config_data.get('dbname', dbname)
