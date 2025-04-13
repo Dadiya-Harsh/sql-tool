@@ -29,6 +29,10 @@ Whether you're building an AI-powered chatbot, a data analysis tool, or any appl
 - **Error Handling**: Custom exceptions for schema reflection, query validation, and execution errors.
 - **Testing**: Comprehensive test suite using `pytest` with temporary table management to preserve production data.
 
+## Demonstaration
+
+![SQL Agent Tool Demo](assets/project_sql_agent_tool_demo.gif)
+
 ## Project Structure
 
 ```
