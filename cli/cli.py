@@ -32,6 +32,7 @@ def load_config(config_path):
         db_config = config.get("database", {})
         llm_config = config.get("llm", {})
         return {
+            "drivername": db_config.get("drivername", default_db_config["drivername"]),
             "host": db_config.get("host", default_db_config["host"]),
             "port": db_config.get("port", default_db_config["port"]),
             "dbname": db_config.get("dbname", default_db_config["dbname"]),

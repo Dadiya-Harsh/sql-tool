@@ -1,5 +1,5 @@
 import click
-from sql_agent_tool import SQLAgentTool
+from sql_agent_tool.core import SQLAgentTool
 from sql_agent_tool.models import DatabaseConfig, LLMConfig
 
 @click.command()

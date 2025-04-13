@@ -12,3 +12,4 @@ click
 PyMySQL
 cx-Oracle
 pyodbc
+PyYAMl
