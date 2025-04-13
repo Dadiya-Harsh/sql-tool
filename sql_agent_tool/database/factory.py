@@ -1,12 +1,12 @@
 # sql_agent_tool/database/factory.py
 from typing import Dict, Type
 from sql_agent_tool.models import DatabaseConfig
-from database.database_base import DatabaseBase
-from database.database_postgresql import PostgreSQLDatabase
-from database.database_mssql import MSSQLDatabase
-from database.database_mysql import MySQLDatabase
-from database.database_oracle_db import OracleDatabase
-from database.database_sqllite import SQLiteDatabase
+from sql_agent_tool.database.database_base import DatabaseBase
+from sql_agent_tool.database.database_postgresql import PostgreSQLDatabase
+from sql_agent_tool.database.database_mssql import MSSQLDatabase
+from sql_agent_tool.database.database_mysql import MySQLDatabase
+from sql_agent_tool.database.database_oracle_db import OracleDatabase
+from sql_agent_tool.database.database_sqllite import SQLiteDatabase
 
 
 class DatabaseFactory:

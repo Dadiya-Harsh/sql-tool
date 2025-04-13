@@ -15,21 +15,35 @@ class DatabaseConfig(BaseModel):
 
     @field_validator('drivername')
     def validate_drivername(cls, v):
-        allowed = {'postgresql', 'mysql', 'sqlite', 'mssql'}
+        allowed = {'postgresql', 'mysql', 'sqlite', 'mssql', 'mysql+pymysql', 'oracle+cx_oracle'}
         if v not in allowed:
             raise ValueError(f'Driver must be one of {allowed}')
         return v
     
-    def build_connection_string(self) -> str:
-        """Build a SQLAlchemy-compatible connection string."""
-        if self.drivername == "sqlite":
+    def build_connection_string(self, driver: str = None) -> str:
+        """Build a SQLAlchemy-compatible connection string, optionally overriding the driver."""
+        # Handle SQLite separately
+        if self.drivername == "sqlite" or (driver and "sqlite" in driver):
             return f"sqlite:///{self.database}"
-        
-        params = "&".join(f"{k}={v}" for k, v in self.query.items())
-        ssl_param = "?ssl=true" if self.require_ssl else ""
+
+        # Use provided driver or fall back to drivername
+        driver = driver or self.drivername
+
+        # Construct base connection string
         port_part = f":{self.port}" if self.port else ""
-        return f"{self.drivername}://{self.username}:{self.password}@{self.host}{port_part}/{self.database}{ssl_param}{f'&{params}' if params else ''}"
-        # return self.connection_string
+        base_url = f"{driver}://{self.username}:{self.password}@{self.host}{port_part}/{self.database}"
+
+        # Handle query parameters
+        query_params = []
+        if self.require_ssl:
+            query_params.append("ssl=true")
+        if self.query:
+            query_params.extend(f"{key}={value}" for key, value in self.query.items())
+
+        # Combine query parameters
+        if query_params:
+            return f"{base_url}?{'&'.join(query_params)}"
+        return base_url
 
 class QueryResult(BaseModel):
     """Model for query results"""

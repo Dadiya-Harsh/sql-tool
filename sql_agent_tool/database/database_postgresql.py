@@ -4,7 +4,7 @@ import sqlalchemy
 from sqlalchemy.orm import Session
 from psycopg2 import DatabaseError, Error as Psycopg2Error
 import sqlparse
-from database_base import DatabaseBase
+from sql_agent_tool.database.database_base import DatabaseBase
 from typing import Dict, Any, List, Optional, Tuple
 import logging
 import sys
