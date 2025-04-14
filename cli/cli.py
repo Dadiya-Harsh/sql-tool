@@ -44,6 +44,7 @@ def load_config(config_path):
             "max_tokens": llm_config.get("max_tokens", default_llm_config["max_tokens"])
         }
     return {
+        "drivername": default_db_config["drivername"],
         "host": default_db_config["host"],
         "port": default_db_config["port"],
         "dbname": default_db_config["dbname"],
@@ -57,6 +58,7 @@ def load_config(config_path):
 
 @click.group()
 @click.option('--config', type=click.Path(exists=True), help='Path to configuration YAML file')
+@click.option('--drivername', default=lambda: load_config('config.yaml').get('drivername'), help='Database driver name (e.g., postgresql, mysql, sqlite)')
 @click.option('--host', default=lambda: load_config('config.yaml').get('host'), help='Database host')
 @click.option('--port', default=lambda: load_config('config.yaml').get('port'), help='Database port')
 @click.option('--dbname', default=lambda: load_config('config.yaml').get('dbname'), help='Database name')
@@ -68,7 +70,7 @@ def load_config(config_path):
 @click.option('--max-rows', default=lambda: load_config('config.yaml').get('max_rows', 1000), help='Maximum rows to return')
 @click.option('--read-only', is_flag=True, default=True, help='Enable read-only mode')
 @click.pass_context
-def cli(ctx, config, host, port, dbname, user, password, provider, api_key, model, max_rows, read_only):
+def cli(ctx, config, drivername, host, port, dbname, user, password, provider, api_key, model, max_rows, read_only):
     """SQL Agent CLI Tool - Manage databases with LLM-powered queries."""
     # If --config is provided, reload config to override defaults
     if config:
@@ -84,7 +86,7 @@ def cli(ctx, config, host, port, dbname, user, password, provider, api_key, mode
 
     ctx.ensure_object(dict)
     ctx.obj['db_config'] = DatabaseConfig(
-        drivername='postgresql',
+        drivername=drivername,
         username=user,
         password=password,
         host=host,
