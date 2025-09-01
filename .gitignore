@@ -17,3 +17,6 @@ test4.py
 
 config.yaml
 *.yaml
+
+/.idea/
+.vscode/
