@@ -1,0 +1,48 @@
+Source: sql-agent-tool
+Section: python
+Priority: optional
+Maintainer: Harsh Dadiya <harshdadiya@gmail.com>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-sequence-python3,
+ python3-setuptools,
+ python3-all,
+ python3-sphinx,
+ python3-sphinx-rtd-theme,
+Standards-Version: 4.6.2
+Homepage: https://github.com/Dadiya-Harsh/sql-tool
+
+Package: python3-sql-agent-tool
+Architecture: all
+Multi-Arch: foreign
+Depends:
+ ${python3:Depends},
+ ${misc:Depends},
+Suggests:
+ python-sql-agent-tool-doc,
+Description: Secure SQL tool for AI agents to interact with databases
+ A Python-based secure SQL tool designed for AI agents to safely interact
+ with databases. Features include:
+  - Natural language to SQL query translation
+  - Safe execution with schema reflection
+  - Multi-LLM provider support (Groq, OpenAI, Gemini, DeepSeek)
+  - Database independence (PostgreSQL, MySQL, SQLite, OracleDB)
+ .
+ Licensed under the Apache License 2.0. For commercial licensing options,
+ please refer to the upstream project documentation.
+
+Package: python-sql-agent-tool-doc
+Section: doc
+Architecture: all
+Multi-Arch: foreign
+Depends:
+ ${sphinxdoc:Depends},
+ ${misc:Depends},
+Description: documentation for SQL Agent Tool
+ A Python-based secure SQL tool designed for AI agents to safely interact
+ with databases.
+ .
+ This package contains the HTML documentation and manual pages for the
+ SQL Agent Tool, including API reference, usage examples, and CLI
+ documentation.

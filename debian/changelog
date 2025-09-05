@@ -1,0 +1,5 @@
+sql-agent-tool (0.1.9-1) UNRELEASED; urgency=medium
+
+  * Initial release. (Closes: #1113886)  
+
+ -- Harsh Dadiya <harshdadiya@gmail.com>  Wed, 03 Sep 2025 17:50:59 +0000

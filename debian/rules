@@ -1,0 +1,32 @@
+#!/usr/bin/make -f
+
+# See debhelper(7) (uncomment to enable).
+# Output every command that modifies files on the build system.
+export DH_VERBOSE = 1
+
+export PYBUILD_NAME=sql-agent-tool
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+
+# If you need to rebuild the Sphinx documentation:
+# Add sphinxdoc to the dh --with line.
+#
+# And uncomment the following lines.
+#execute_after_dh_auto_build-indep: export http_proxy=127.0.0.1:9
+#execute_after_dh_auto_build-indep: export https_proxy=127.0.0.1:9
+execute_after_dh_auto_build-indep:
+	PYTHONPATH=. python3 -m sphinx -N -bhtml \
+	docs/ build/html # HTML generator
+	PYTHONPATH=. python3 -m sphinx -N -bman \
+	docs/ build/man # Manpage generator
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -rf build/
+	rm -rf docs/_build/ 
+
+
+# override_dh_auto_test:
+# 	pybuild --test --test-pytest -i python{version} -p 3.12 --test-args "tests -k 'not (test_sql_agent or test_gemini_llm)'"

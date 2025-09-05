@@ -9,3 +9,6 @@ openai==1.72.0
 groq==0.22.0
 google-generativeai==0.8.4
 click
+sphinx==8.1.3
+sphinx-rtd-theme==3.0.2
+
