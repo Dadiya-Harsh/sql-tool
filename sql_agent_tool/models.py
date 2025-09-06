@@ -1,5 +1,6 @@
 from pydantic import BaseModel, field_validator
 from typing import Dict, List, Any, Optional
+from .llm.model_validation import available_models_list
 
 class DatabaseConfig(BaseModel):
     """Configuration model for database connection"""
@@ -45,7 +46,7 @@ class LLMConfig(BaseModel):
     
     @field_validator('model')
     def validate_model(cls, v):
-        allowed = {'gpt-3.5-turbo', 'gpt-4', 'llama-3.3-70b-versatile', 'gemini-1.5-turbo', 'gemma2-9b-it', 'llama-3.1-8b-instant', 'llama3-70b-8192', 'gpt-4o', 'o1-mini', 'models/gemini-1.5-flash'}
+        allowed =available_models_list
         if v not in allowed:
             raise ValueError(f'Model must be one of {allowed}')
         return v
